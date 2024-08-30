@@ -95,8 +95,12 @@ func FileCreate(c *gin.Context) {
 	if jsonValid.FolderID!=0 {
 		file = Model.File{
 			FileName: files.Filename,
-			FolderID: jsonValid.FolderID,
-			UserID: int(user.ID),
+			UserRelation: Model.UserRelation{
+				UserID: int(user.ID),
+			},
+			FolderRelation: Model.FolderRelation{
+				FolderID: jsonValid.FolderID,
+			},
 			Size: int(files.Size),
 			FileNameHash: filesNameHashFull,
 			AccessId: Consts.CLOSE,
@@ -104,7 +108,9 @@ func FileCreate(c *gin.Context) {
 	} else{
 		file = Model.File{
 			FileName: files.Filename,
-			UserID: int(user.ID),
+			UserRelation: Model.UserRelation{
+				UserID: int(user.ID),
+			},
 			Size: int(files.Size),
 			FileNameHash: filesNameHashFull,
 			AccessId: Consts.CLOSE,

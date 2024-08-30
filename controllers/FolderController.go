@@ -53,14 +53,20 @@ func CreateFolder(c *gin.Context){
 
 	if jsonValid.FolderID!=0 {
 		folder = Model.Folder{
-			FolderID: jsonValid.FolderID,
-			UserID: int(user.ID),
+			FolderRelation: Model.FolderRelation{
+				FolderID: jsonValid.FolderID,
+			},
+			UserRelation: Model.UserRelation{
+				UserID: int(user.ID),
+			},
 			NameFolder: jsonValid.NameFolder,
 			AccessId: Consts.CLOSE,
 		};
 	} else{
 		folder = Model.Folder{
-			UserID: int(user.ID),
+			UserRelation: Model.UserRelation{
+				UserID: int(user.ID),
+			},
 			NameFolder: jsonValid.NameFolder,
 			AccessId: Consts.CLOSE,
 		};
