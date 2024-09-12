@@ -1,7 +1,6 @@
 package main
 
 import (
-	"flag"
 	"log"
 	Controller "mypackages/controllers"
 	"mypackages/db"
@@ -26,20 +25,6 @@ func init() {
     }
 }
 
-// func defaultCsrf() gin.HandlerFunc{
-// 	return csrf.Middleware(csrf.Options{
-// 		Secret: "secret123",
-// 		ErrorFunc: func(c *gin.Context) {
-// 			c.String(400, "CSRF token mismatch")
-// 			c.Abort()
-// 		},
-// 	})
-// }
-
-var (
-	addr = flag.String("addr", "localhost:50051", "the address to connect to")
-	name = flag.String("name", defaultName, "Name to greet")
-)
 const (
 	defaultName = "world"
 )

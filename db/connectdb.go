@@ -18,7 +18,7 @@ func ConnectDatabase() *gorm.DB{
     host, _ := os.LookupEnv("DB_HOST")
     db, _ := os.LookupEnv("DB_DATABASE")
     
-    dsn := "host=" + host + " user=" + user + " password="+ password + " dbname=" + db + " port="+ port + " sslmode=disable TimeZone=Asia/Shanghai"
+    dsn := "host=" + host + " user=" + user + " password="+ password + " dbname=" + db + " port="+ port + " sslmode=disable TimeZone=Etc/GMT"
     database, err := gorm.Open(postgres.Open(dsn), &gorm.Config{})
 
     if err != nil {
@@ -37,7 +37,7 @@ func ConnectDatabaseStats() *gorm.DB {
     host, _ := os.LookupEnv("DB_HOST")
     db, _ := os.LookupEnv("DB_DATABASE")
     
-    dsn := "host=" + host + " user=" + user + " password="+ password + " dbname=" + db + " port="+ port + " sslmode=disable TimeZone=Asia/Shanghai"
+    dsn := "host=" + host + " user=" + user + " password="+ password + " dbname=" + db + " port="+ port + " sslmode=disable TimeZone=Etc/GMT"
     database, err := gorm.Open(postgres.Open(dsn), &gorm.Config{
         DisableForeignKeyConstraintWhenMigrating: true,
     })
