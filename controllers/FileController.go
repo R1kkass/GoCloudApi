@@ -3,7 +3,6 @@ package Controller
 import (
 	"fmt"
 	"io"
-	"log"
 	"mime/multipart"
 	Consts "mypackages/consts"
 	"mypackages/controllers/actions"
@@ -87,7 +86,6 @@ func FileCreate(c *gin.Context) {
 	files, _ := c.FormFile("file")
 
 	
-	log.Println(files)
 	var file Model.File;
 	filesNameHash := uuid.New()
 	filesNameHashFull := filesNameHash.String() + path.Ext(files.Filename)
@@ -126,7 +124,7 @@ func FileCreate(c *gin.Context) {
 		return
 	}
 	
-	f, _:=files.Open()
+	f, _ := files.Open()
 	var path string = "files/"+strconv.Itoa(int(user.ID))+"/"+filesNameHashFull
 
 	if jsonValid.FolderID!=0{
