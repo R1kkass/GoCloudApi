@@ -32,6 +32,8 @@ type ChangeFolderAccessRequest struct{
 }
 
 func CreateFolder(c *gin.Context){
+	var pathFileFolder, _ = os.LookupEnv("PATH_FILES")
+
 	var jsonValid FolderRequest
 	if err := c.ShouldBind(&jsonValid); err != nil{
 		c.JSON(422, gin.H{
@@ -81,7 +83,7 @@ func CreateFolder(c *gin.Context){
 		})
 		return
 	}
-	os.Mkdir("files/"+strconv.Itoa(int(user.ID))+"/"+strconv.Itoa(int(folder.ID)), os.ModePerm)
+	os.Mkdir(pathFileFolder+strconv.Itoa(int(user.ID))+"/"+strconv.Itoa(int(folder.ID)), os.ModePerm)
 
 	c.JSON(201, gin.H{
 		"message": "success",

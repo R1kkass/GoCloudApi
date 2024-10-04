@@ -44,8 +44,8 @@ type ChangeFileAccessRequest struct{
 }
 
 
-
 func FileCreate(c *gin.Context) {
+	var pathFileFolder, _ = os.LookupEnv("PATH_FILES")
 	var jsonValid FileRequest
 	if err := c.ShouldBind(&jsonValid); err != nil{
 		c.JSON(422, gin.H{
@@ -125,16 +125,19 @@ func FileCreate(c *gin.Context) {
 	}
 	
 	f, _ := files.Open()
-	var path string = "files/"+strconv.Itoa(int(user.ID))+"/"+filesNameHashFull
+	var path string = pathFileFolder+strconv.Itoa(int(user.ID))+"/"+filesNameHashFull
 
 	if jsonValid.FolderID!=0{
-		path = "files/"+strconv.Itoa(int(user.ID))+"/"+strconv.Itoa(jsonValid.FolderID)+"/"+filesNameHashFull
+		path = pathFileFolder+strconv.Itoa(int(user.ID))+"/"+strconv.Itoa(jsonValid.FolderID)+"/"+filesNameHashFull
 	}
+
+	defer f.Close()
 
 	dst, errOs := os.Create(path)
 	_, errIo := io.Copy(dst, f)
 
 	if errIo!=nil || errOs!=nil{
+		fmt.Println(errIo.Error(), errOs.Error())
 		c.JSON(500, gin.H{
 			"message": "Файл не сохранён",
 		})
@@ -212,20 +215,9 @@ func GetAll(c *gin.Context){
 	})
 }
 
-func DownloadFile(c *gin.Context) {
-	content:="Download file here happliy"
-	fileName := "hello.txt"
-	c.Header("Content-Disposition", "attachment; filename="+fileName)
-	c.Header("Content-Type", "application/text/plain")
-	c.Header("Accept-Length", fmt.Sprintf("%d", len(content)))
-	c.Writer.Write([]byte(content))
-	c.JSON(200, gin.H{
-		"msg": "Download file successfully",
-	})
-}
-
 func OpenFile(c *gin.Context) {
 	user, exist := actions.GetUser(c)
+	var pathFileFolder, _ = os.LookupEnv("PATH_FILES")
 	
 	if !exist{
 		c.JSON(404, gin.H{
@@ -244,11 +236,11 @@ func OpenFile(c *gin.Context) {
 
 	if file.FolderID==0{
 
-		c.File("files/"+strconv.Itoa(file.UserID)+"/"+file.FileNameHash);	
+		c.File(pathFileFolder+strconv.Itoa(file.UserID)+"/"+file.FileNameHash);	
 		return
 	}
 
-	c.File("files/"+strconv.Itoa(file.UserID)+"/"+strconv.Itoa(file.FolderID)+"/"+file.FileNameHash);	
+	c.File(pathFileFolder+strconv.Itoa(file.UserID)+"/"+strconv.Itoa(file.FolderID)+"/"+file.FileNameHash);	
 }
 
 func GetSpace(c *gin.Context) {
@@ -275,15 +267,6 @@ func GetSpace(c *gin.Context) {
 	})
 }
 
-func GetClientIPByHeaders(c *gin.Context) {
-
-    // Client could be behid a Proxy, so Try Request Headers (X-Forwarder)
-
-
-    c.JSON(200, gin.H{
-		"space": c.Request.Header["X-Forwarded-For"],
-	})
-}
 
 func RenameFile(c *gin.Context){
 	var jsonValid RenameRequest
@@ -353,14 +336,14 @@ func MoveFile(c *gin.Context) {
 		})
 		return
 	}
-
+	var pathFileFolder, _ = os.LookupEnv("PATH_FILES")
 
 	var oldPath = getFilePath(file)
 	var err error;
 	if jsonValid.FolderID!=0{
-		err = os.Rename(oldPath, "files/"+strconv.Itoa(file.UserID)+"/"+strconv.Itoa(jsonValid.FolderID)+"/"+file.FileNameHash)
+		err = os.Rename(oldPath, pathFileFolder+strconv.Itoa(file.UserID)+"/"+strconv.Itoa(jsonValid.FolderID)+"/"+file.FileNameHash)
 	} else {
-		err = os.Rename(oldPath, "files/"+strconv.Itoa(file.UserID)+"/"+file.FileNameHash)
+		err = os.Rename(oldPath, pathFileFolder+strconv.Itoa(file.UserID)+"/"+file.FileNameHash)
 	}
 	if err!=nil {		
 		c.JSON(500, gin.H{
@@ -420,11 +403,13 @@ func ChangeFileAccess(c *gin.Context) {
 
 
 func getFilePath(file *Model.File) string{
+	var pathFileFolder, _ = os.LookupEnv("PATH_FILES")
+
 	var path string
 	if file.FolderID==0{
-		path = "files/"+strconv.Itoa(file.UserID)+"/"+file.FileNameHash;	
+		path = pathFileFolder+strconv.Itoa(file.UserID)+"/"+file.FileNameHash;	
 	} else{
-		path = "files/"+strconv.Itoa(file.UserID)+"/"+strconv.Itoa(file.FolderID)+"/"+file.FileNameHash;	
+		path = pathFileFolder+strconv.Itoa(file.UserID)+"/"+strconv.Itoa(file.FolderID)+"/"+file.FileNameHash;	
 	}
 	return path;
 }
