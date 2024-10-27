@@ -100,9 +100,10 @@ type Status struct {
 type Chat struct {
 	DefaultModel
 
-	Messages []Message `json:"messages"`
+	Messages []Message
 	Message  Message   `json:"message" gorm:"constraint:OnUpdate:CASCADE,OnDelete:CASCADE;"`
 	ChatUsers []ChatUser `json:"chat_users"`
+	UnReadedMessages []UnReadedMessage
 	NameChat  string     `json:"name_chat"`
 }
 
@@ -148,4 +149,14 @@ type SavedKeys struct {
 	Ip string `json:"ip"`
 	Name string `json:"name"`
 	DateEnd uint `json:"date_end"`
+}
+
+type UnReadedMessage struct{
+	DefaultModel
+	UserRelation
+		
+	ChatID int   `json:"chat_id"`
+	Chat   *Chat `json:"chat" gorm:"constraint:OnUpdate:CASCADE,OnDelete:CASCADE"`
+	MessageID uint `json:"message_id"`
+	Message *Message `json:"message" gorm:"constraint:OnUpdate:CASCADE,OnDelete:CASCADE"`
 }

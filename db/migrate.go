@@ -23,6 +23,6 @@ func Migration() {
     }
 
     // Apply migration
-    database.AutoMigrate(&Model.User{}, &Model.Folder{}, &Model.File{}, &Model.Accesses{}, &Model.Status{}, &Model.RequestAccess{}, &Model.Keys{}, &Model.KeysSecondary{}, &Model.Chat{}, &Model.ChatUser{}, &Model.Message{}, &Model.SavedKeys{})
+    database.AutoMigrate(&Model.User{}, &Model.Folder{}, &Model.File{}, &Model.Accesses{}, &Model.Status{}, &Model.RequestAccess{}, &Model.Keys{}, &Model.KeysSecondary{}, &Model.Chat{}, &Model.ChatUser{}, &Model.Message{}, &Model.SavedKeys{}, &Model.UnReadedMessage{})
     database.Migrator()
 }
