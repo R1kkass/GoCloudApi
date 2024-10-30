@@ -100,63 +100,66 @@ type Status struct {
 type Chat struct {
 	DefaultModel
 
-	Messages []Message
-	Message  Message   `json:"message" gorm:"constraint:OnUpdate:CASCADE,OnDelete:CASCADE;"`
-	ChatUsers []ChatUser `json:"chat_users"`
-	UnReadedMessages []UnReadedMessage
-	NameChat  string     `json:"name_chat"`
+	Messages         []Message
+	Message          Message           `json:"message" gorm:"constraint:OnUpdate:CASCADE,OnDelete:CASCADE;"`
+	ChatUsers        []ChatUser        `json:"chat_users"`
+	UnReadedMessages []UnReadedMessage `json:"un_readed_message"`
+	NameChat         string            `json:"name_chat"`
 }
 
 type ChatUser struct {
 	DefaultModel
 	UserRelation
 
-	ChatID int   `json:"chat_id"`
-	Chat   *Chat `json:"chat" gorm:"constraint:OnUpdate:CASCADE,OnDelete:CASCADE"`
-	SubmitCreate bool `json:"submit_create" gorm:"default:false"`
+	ChatID                int   `json:"chat_id"`
+	Chat                  *Chat `json:"chat" gorm:"constraint:OnUpdate:CASCADE,OnDelete:CASCADE"`
+	SubmitCreate          bool  `json:"submit_create" gorm:"default:false"`
+	UnReadedMessagesCount int   `gorm:"-:migration,column:un_readed_messages_count,default:null" json:"un_readed_messages_count"`
 }
 
 type Message struct {
 	DefaultModel
 	UserRelation
 
-	ChatID   int    `json:"chat_id"`
-	Chat     *Chat  `json:"chat" gorm:"constraint:OnUpdate:CASCADE,OnDelete:CASCADE"`
-	Text     string `json:"text"`
+	ChatID          int              `json:"chat_id"`
+	Chat            *Chat            `json:"chat" gorm:"constraint:OnUpdate:CASCADE,OnDelete:CASCADE"`
+	Text            string           `json:"text"`
+	UnReadedMessage *UnReadedMessage `json:"un_readed_message"`
+	StatusRead      bool             `json:"status_read" gorm:"default:false"`
 }
 
 type Keys struct {
 	DefaultModel
 
-	ChatID uint `json:"user_id"`
-	P string `json:"p"`
-	G int64 `json:"g"`
+	ChatID uint   `json:"user_id"`
+	P      string `json:"p"`
+	G      int64  `json:"g"`
 }
 
 type KeysSecondary struct {
 	DefaultModel
 
-	UserID uint `json:"user_id"`
-	ChatID uint `json:"chat_id"`
-	Key string `json:"key"`
+	UserID uint   `json:"user_id"`
+	ChatID uint   `json:"chat_id"`
+	Key    string `json:"key"`
 }
 
 type SavedKeys struct {
 	DefaultModel
 
-	UserID uint `json:"user_id"`
-	Token string `json:"token"`
-	Ip string `json:"ip"`
-	Name string `json:"name"`
-	DateEnd uint `json:"date_end"`
+	UserID  uint   `json:"user_id"`
+	Token   string `json:"token"`
+	Ip      string `json:"ip"`
+	Name    string `json:"name"`
+	DateEnd uint   `json:"date_end"`
 }
 
-type UnReadedMessage struct{
+type UnReadedMessage struct {
 	DefaultModel
 	UserRelation
-		
-	ChatID int   `json:"chat_id"`
-	Chat   *Chat `json:"chat" gorm:"constraint:OnUpdate:CASCADE,OnDelete:CASCADE"`
-	MessageID uint `json:"message_id"`
-	Message *Message `json:"message" gorm:"constraint:OnUpdate:CASCADE,OnDelete:CASCADE"`
+
+	ChatID    int      `json:"chat_id"`
+	Chat      *Chat    `json:"chat" gorm:"constraint:OnUpdate:CASCADE,OnDelete:CASCADE"`
+	MessageID uint     `json:"message_id"`
+	Message   *Message `json:"message" gorm:"constraint:OnUpdate:CASCADE,OnDelete:CASCADE"`
 }
